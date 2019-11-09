@@ -8,5 +8,6 @@ class MainTest {
         println(createName())
         println(createName())
         assertTrue(createName().length in 10..20)
+        assertTrue(alphabets.contains(createName().first()))
     }
 }

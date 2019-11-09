@@ -6,6 +6,7 @@ import kotlin.random.Random
 val alphabets = ('A'..'Z').map { it } + ('a'..'z').map { it }
 val numbers = ('0'..'9').map { it }
 val nameChars = alphabets + numbers
+val functionNames = mutableSetOf<String>()
 
 fun main(args: Array<String>) {
     val fileName = args[0]
@@ -20,18 +21,28 @@ fun main(args: Array<String>) {
     val bufferLength = 64 * 1024
     val buffer = ByteArray(1000)
 
+    val functionList = mutableListOf<MutableList<String>>()
+    var blockCount = 0
+    functionList.add(mutableListOf())
+
     while (true) {
         var line = fgets(buffer.refTo(1), bufferLength, file)?.toKString() ?: break
         line = line.replace("\n", "")
         if (line.isEmpty()) continue
         if (line.first() == '#') fprintf(out, "%s\n", line)
         else {
+            blockCount += line.count { it == '{' } - line.count { it == '}' }
             val words = line.split(" ").map { it }
+            var isNotIndent = false
             words.forEach {
-                fprintf(out, "%s ", it)
+                if (it.isNotEmpty()) isNotIndent = true
+                if (isNotIndent) functionList.last().add(it)
                 print(it)
             }
-            println()
+            if (blockCount == 0) {
+                functionList.add(mutableListOf())
+                println()
+            }
         }
     }
 
@@ -40,8 +51,7 @@ fun main(args: Array<String>) {
 }
 
 fun createName(): String {
-    val random = Random
-    val length = abs(random.nextInt() % 10) + 10
+    val length = abs(Random.nextInt() % 10) + 10
     var name = ""
     name += alphabets.random()
     while (name.length < length) name += nameChars.random()
