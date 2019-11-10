@@ -23,7 +23,6 @@ fun main(args: Array<String>) {
 
     val functionList = mutableListOf<MutableList<String>>()
     var blockCount = 0
-    functionList.add(mutableListOf())
 
     while (true) {
         var line = fgets(buffer.refTo(1), bufferLength, file)?.toKString() ?: break
@@ -31,6 +30,10 @@ fun main(args: Array<String>) {
         if (line.isEmpty()) continue
         if (line.first() == '#') fprintf(out, "%s\n", line)
         else {
+            if (blockCount == 0) {
+                functionList.add(mutableListOf())
+                println()
+            }
             blockCount += line.count { it == '{' } - line.count { it == '}' }
             val words = line.split(" ").map { it }
             var isNotIndent = false
@@ -39,12 +42,9 @@ fun main(args: Array<String>) {
                 if (isNotIndent) functionList.last().add(it)
                 print(it)
             }
-            if (blockCount == 0) {
-                functionList.add(mutableListOf())
-                println()
-            }
         }
     }
+    println()
 
     fclose(file)
     fclose(out)
