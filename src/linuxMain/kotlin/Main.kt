@@ -4,11 +4,6 @@ import kotlinx.cinterop.toKString
 import platform.posix.*
 import kotlin.random.Random
 
-val alphabets = ('A'..'Z').map { it } + ('a'..'z').map { it }
-val numbers = ('0'..'9').map { it }
-val nameChars = alphabets + numbers
-val functionNames = mutableSetOf<String>()
-
 fun main(args: Array<String>) {
     val fileName = args[0]
     var fileLength = fileName.length
@@ -21,15 +16,13 @@ fun main(args: Array<String>) {
     val out = fopen("out.c", "w")
     val functionList = mutableListOf<MutableList<String>>()
 
-    if (file != null && out != null) functionList.addAll(splitToken(file, out))
-
-    println()
+    if (file != null && out != null) functionList.addAll(splitSpace(file, out))
 
     fclose(file)
     fclose(out)
 }
 
-fun splitToken(file: CPointer<FILE>, out: CPointer<FILE>): MutableList<MutableList<String>> {
+fun splitSpace(file: CPointer<FILE>, out: CPointer<FILE>): MutableList<MutableList<String>> {
     val bufferLength = 64 * 1024
     val buffer = ByteArray(1000)
     val functionList = mutableListOf<MutableList<String>>()
@@ -42,25 +35,61 @@ fun splitToken(file: CPointer<FILE>, out: CPointer<FILE>): MutableList<MutableLi
         if (line.isEmpty()) continue
         if (line.first() == '#') fprintf(out, "%s\n", line)
         else {
-            if (blockCount == 0) {
-                functionList.add(mutableListOf())
-                println()
-            }
+            if (blockCount == 0) functionList.add(mutableListOf())
             blockCount += line.count { it == '{' } - line.count { it == '}' }
             val words = line.split(" ").map { it }
             var isNotIndent = false
             var isNotLineComment = true
+            var string = ""
+            var isString = false
             words.forEach {
                 if (it.isNotEmpty()) isNotIndent = true
                 if (it.length >= 2 && it.startsWith("//")) isNotLineComment = false
-                if (it.length >= 2 && it.startsWith("/*")) isNotBlockComment = false
-                if (isNotIndent && isNotBlockComment && isNotLineComment) functionList.last().add(it)
+                else if (it.length >= 2 && it.startsWith("/*")) isNotBlockComment = false
+                else if (it.count { c -> c == '"' } == 1) {
+                    if (isString) {
+                        string += " $it"
+                        isString = false
+                        functionList.last().addAll(splitToken(string))
+                    } else {
+                        string += it
+                        isString = true
+                    }
+                } else if (isString) string += " $it"
+                else if (isNotIndent && isNotBlockComment && isNotLineComment && !isString)
+                    functionList.last().addAll(splitToken(it))
                 if (it.length >= 2 && it.endsWith("*/")) isNotBlockComment = true
-                print(it)
             }
         }
     }
     return functionList
+}
+
+fun splitToken(word: String): MutableList<String> {
+    val tokens = mutableListOf<String>()
+    var token = ""
+    var string = false
+    word.forEach {
+        if (nameChars.contains(it) || it == '.' || it == ' ' || it == '\\') {
+            token += it
+        } else if (it == '"') {
+            if (string) {
+                tokens.add(token + it)
+                token = ""
+                string = false
+            } else {
+                if (token.isNotEmpty()) tokens.add(token)
+                token = "$it"
+                string = true
+            }
+        } else {
+            if (token.isNotEmpty()) tokens.add(token)
+            tokens.add(it.toString())
+            token = ""
+        }
+    }
+    if (token.isNotEmpty()) tokens.add(token)
+    return tokens
 }
 
 fun createName(): String {

@@ -8,5 +8,5 @@ enum class TokenType {
     OPTION,
     NUMBER,
     STRING,
-    COMMENT
+    SPACE
 }

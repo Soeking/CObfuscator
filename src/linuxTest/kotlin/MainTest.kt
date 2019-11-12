@@ -16,8 +16,10 @@ class MainTest {
     fun testSplit() {
         val testFile = fopen("test.c", "r") ?: return
         val testOut = fopen("out.c", "w") ?: return
-        val list = splitToken(testFile, testOut)
-        println(list)
+        val list = splitSpace(testFile, testOut)
+        list.forEach {
+            println(it)
+        }
         assertTrue(true)
     }
 }
