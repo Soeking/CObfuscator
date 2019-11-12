@@ -1,3 +1,4 @@
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.toKString
 import platform.posix.*
@@ -18,9 +19,19 @@ fun main(args: Array<String>) {
 
     val file = fopen(fileName, "r")
     val out = fopen("out.c", "w")
+    val functionList = mutableListOf<MutableList<String>>()
+
+    if (file != null && out != null) functionList.addAll(splitToken(file, out))
+
+    println()
+
+    fclose(file)
+    fclose(out)
+}
+
+fun splitToken(file: CPointer<FILE>, out: CPointer<FILE>): MutableList<MutableList<String>> {
     val bufferLength = 64 * 1024
     val buffer = ByteArray(1000)
-
     val functionList = mutableListOf<MutableList<String>>()
     var blockCount = 0
     var isNotBlockComment = true
@@ -49,10 +60,7 @@ fun main(args: Array<String>) {
             }
         }
     }
-    println()
-
-    fclose(file)
-    fclose(out)
+    return functionList
 }
 
 fun createName(): String {
