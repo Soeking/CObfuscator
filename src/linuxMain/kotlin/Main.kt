@@ -23,6 +23,7 @@ fun main(args: Array<String>) {
 
     val functionList = mutableListOf<MutableList<String>>()
     var blockCount = 0
+    var isNotBlockComment = true
 
     while (true) {
         var line = fgets(buffer.refTo(1), bufferLength, file)?.toKString() ?: break
@@ -37,9 +38,13 @@ fun main(args: Array<String>) {
             blockCount += line.count { it == '{' } - line.count { it == '}' }
             val words = line.split(" ").map { it }
             var isNotIndent = false
+            var isNotLineComment = true
             words.forEach {
                 if (it.isNotEmpty()) isNotIndent = true
-                if (isNotIndent) functionList.last().add(it)
+                if (it.length >= 2 && it.startsWith("//")) isNotLineComment = false
+                if (it.length >= 2 && it.startsWith("/*")) isNotBlockComment = false
+                if (isNotIndent && isNotBlockComment && isNotLineComment) functionList.last().add(it)
+                if (it.length >= 2 && it.endsWith("*/")) isNotBlockComment = true
                 print(it)
             }
         }
