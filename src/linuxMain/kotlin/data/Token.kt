@@ -1,13 +1,18 @@
 package data
 
+import util.*
+
 class Token(token: String) {
     var type: TokenType
 
     init {
-        type = initType()
+        type = initType(token)
     }
 
-    private fun initType(): TokenType {
+    private fun initType(token: String): TokenType {
+        if (token.length == 1 && !nameChars.contains(token.first()))
+            return TokenType.OPTION
+        if (typeList.contains(token)) return TokenType.TYPE
         return TokenType.VARIABLE
     }
 

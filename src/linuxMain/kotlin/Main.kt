@@ -2,6 +2,7 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.toKString
 import platform.posix.*
+import util.*
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
@@ -70,9 +71,7 @@ fun splitToken(word: String): MutableList<String> {
     var token = ""
     var string = false
     word.forEach {
-        if (nameChars.contains(it) || it == '.' || it == ' ' || it == '\\') {
-            token += it
-        } else if (it == '"') {
+        if (it == '"') {
             if (string) {
                 tokens.add(token + it)
                 token = ""
@@ -82,6 +81,8 @@ fun splitToken(word: String): MutableList<String> {
                 token = "$it"
                 string = true
             }
+        } else if (nameChars.contains(it) || it == '.' || it == '\\' || string) {
+            token += it
         } else {
             if (token.isNotEmpty()) tokens.add(token)
             tokens.add(it.toString())
