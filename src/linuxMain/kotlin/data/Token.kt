@@ -10,9 +10,17 @@ class Token(token: String) {
     }
 
     private fun initType(token: String): TokenType {
-        if (token.length == 1 && !nameChars.contains(token.first()))
-            return TokenType.OPTION
+        if (token.length == 1) {
+            if (bracketList.contains(token.first()))
+                return TokenType.BRACKET
+            if (!nameChars.contains(token.first()))
+                return TokenType.OPTION
+        }
         if (typeList.contains(token)) return TokenType.TYPE
+        if (numbers.contains(token.first())) return TokenType.NUMBER
+        if (token.count { it == '"' } >= 2 && token.first() == '"' && token.last() == '"')
+            return TokenType.STRING
+        if (controlList.contains(token)) return TokenType.CONTROL
         return TokenType.VARIABLE
     }
 
