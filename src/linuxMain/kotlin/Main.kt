@@ -1,3 +1,4 @@
+import data.FunctionToken
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.toKString
@@ -15,9 +16,13 @@ fun main(args: Array<String>) {
 
     val file = fopen(fileName, "r")
     val out = fopen("out.c", "w")
-    val functionList = mutableListOf<MutableList<String>>()
+    val allTokenList = mutableListOf<MutableList<String>>()
 
-    if (file != null && out != null) functionList.addAll(splitSpace(file, out))
+    if (file != null && out != null) allTokenList.addAll(splitSpace(file, out))
+
+    allTokenList.forEach {
+        functionList.add(FunctionToken(it))
+    }
 
     fclose(file)
     fclose(out)
