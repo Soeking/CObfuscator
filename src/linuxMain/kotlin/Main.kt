@@ -97,11 +97,3 @@ fun splitToken(word: String): MutableList<String> {
     if (token.isNotEmpty()) tokens.add(token)
     return tokens
 }
-
-fun createName(): String {
-    val length = abs(Random.nextInt() % 10) + 10
-    var name = ""
-    name += alphabets.random()
-    while (name.length < length) name += nameChars.random()
-    return name
-}
