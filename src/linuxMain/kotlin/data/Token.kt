@@ -2,9 +2,8 @@ package data
 
 import util.*
 
-class Token(token: String) {
+class Token(var token: String) {
     var type: TokenType
-    val token=token
 
     init {
         type = initType(token)
