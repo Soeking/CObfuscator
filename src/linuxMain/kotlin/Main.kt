@@ -1,4 +1,5 @@
 import data.FunctionToken
+import data.TokenType
 import platform.posix.*
 import util.*
 
@@ -22,7 +23,8 @@ fun main(args: Array<String>) {
 
     functionList.forEach {
         it.tokenList.forEach { t ->
-            fprintf(out, t.token)
+            fprintf(out, "%s", t.token)
+            if (t.type == TokenType.TYPE || t.type == TokenType.CONTROL) fprintf(out, " ")
         }
         fprintf(out, "\n")
     }

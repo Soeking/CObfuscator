@@ -23,8 +23,4 @@ class Token(var token: String) {
         if (controlList.contains(token)) return TokenType.CONTROL
         return TokenType.VARIABLE
     }
-
-    fun setType(type: TokenType) {
-        this.type = type
-    }
 }
