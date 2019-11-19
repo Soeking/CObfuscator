@@ -10,9 +10,11 @@ fun main(args: Array<String>) {
         println("this is not c file")
         return
     }
+    var outName = fileName.dropLast(2)
+    outName += "_obf.c"
 
     val file = fopen(fileName, "r")
-    val out = fopen("out.c", "w")
+    val out = fopen(outName, "w")
     val allTokenList = mutableListOf<MutableList<String>>()
 
     if (file != null && out != null) allTokenList.addAll(splitSpace(file, out))

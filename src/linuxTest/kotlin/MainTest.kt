@@ -1,5 +1,4 @@
 import platform.posix.fopen
-import util.*
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
