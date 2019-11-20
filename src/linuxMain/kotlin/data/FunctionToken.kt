@@ -6,7 +6,7 @@ import util.*
 class FunctionToken(tokens: MutableList<String>) {
     val tokenList = mutableListOf<Token>()
     var isFunction = false
-    var name = ""
+    val name:String
     val varName = mutableMapOf<String, String>()
 
     init {
@@ -22,8 +22,11 @@ class FunctionToken(tokens: MutableList<String>) {
             if (tokenList[i].type == TokenType.VARIABLE && i != tokenList.size - 1 && tokenList[i + 1].token == "(")
                 tokenList[i].type = TokenType.FUNCTION
         }
-        name = if (this.isFunction) tokens[tokenList.indexOfFirst { it.type == TokenType.FUNCTION }]
-        else tokens[tokenList.indexOfFirst { it.type == TokenType.TYPE } + 1]
+        name = when {
+            this.isFunction -> tokens[tokenList.indexOfFirst { it.type == TokenType.FUNCTION }]
+            tokens.first() != "typedef" -> tokens[tokenList.indexOfFirst { it.type == TokenType.TYPE } + 1]
+            else -> ""
+        }
     }
 
     fun changeVar() {
