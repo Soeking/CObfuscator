@@ -1,11 +1,13 @@
 package data
 
+import obf.*
 import util.*
 
 class FunctionToken(tokens: MutableList<String>) {
     val tokenList = mutableListOf<Token>()
     var isFunction = false
     var name = ""
+    val varName = mutableMapOf<String, String>()
 
     init {
         tokens.forEach {
@@ -20,7 +22,21 @@ class FunctionToken(tokens: MutableList<String>) {
             if (tokenList[i].type == TokenType.VARIABLE && i != tokenList.size - 1 && tokenList[i + 1].token == "(")
                 tokenList[i].type = TokenType.FUNCTION
         }
-        if (this.isFunction)
-            name = tokens[tokenList.indexOfFirst { it.type == TokenType.FUNCTION }]
+        name = if (this.isFunction) tokens[tokenList.indexOfFirst { it.type == TokenType.FUNCTION }]
+        else tokens[tokenList.indexOfFirst { it.type == TokenType.TYPE } + 1]
+    }
+
+    fun changeVar() {
+        tokenList.forEach {
+            if (it.type == TokenType.VARIABLE && tokenList[tokenList.indexOf(it) - 1].type == TokenType.TYPE) {
+                var randName = createName()
+                while (varName.containsValue(randName)) randName = createName()
+                varName[it.token] = randName
+            }
+        }
+        tokenList.forEach {
+            if (it.type == TokenType.VARIABLE && varName.containsKey(it.token))
+                it.token = varName[it.token] ?: it.token
+        }
     }
 }

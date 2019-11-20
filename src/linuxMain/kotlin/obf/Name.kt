@@ -7,10 +7,20 @@ import kotlin.random.Random
 
 fun nameChane() {
     functionList.forEach {
-        if (it.isFunction && it.name != "main") {
+        if (it.isFunction) it.changeVar()
+    }
+
+    functionList.forEach {
+        if (it.isFunction) {
+            if (it.name != "main") {
+                var name = createName()
+                while (functionNames.containsValue(name)) name = createName()
+                functionNames[it.name] = name
+            }
+        } else {
             var name = createName()
-            while (functionNames.containsValue(name)) name = createName()
-            functionNames[it.name] = name
+            while (globalVars.containsValue(name)) name = createName()
+            globalVars[it.name] = name
         }
     }
 
@@ -18,6 +28,11 @@ fun nameChane() {
         it.tokenList.forEach { t ->
             if (t.type == TokenType.FUNCTION && functionNames.containsKey(t.token))
                 t.token = functionNames[t.token] ?: t.token
+            globalVars.forEach { v ->
+                if (!it.varName.containsKey(v.key) && t.type == TokenType.VARIABLE) {
+                    t.token = globalVars[t.token] ?: t.token
+                }
+            }
         }
     }
 }
