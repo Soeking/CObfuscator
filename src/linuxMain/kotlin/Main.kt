@@ -1,5 +1,6 @@
 import data.FunctionToken
 import data.TokenType
+import obf.*
 import platform.posix.*
 import util.*
 
@@ -22,6 +23,8 @@ fun main(args: Array<String>) {
     allTokenList.forEach {
         functionList.add(FunctionToken(it))
     }
+
+    nameChane()
 
     functionList.forEach {
         it.tokenList.forEach { t ->
