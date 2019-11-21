@@ -1,13 +1,15 @@
 import data.FunctionToken
-import data.TokenType
 import obf.*
 import platform.posix.*
 import util.*
 
 fun main(args: Array<String>) {
+    if (args.isEmpty()) {
+        println("no file")
+        return
+    }
     val fileName = args[0]
-    var fileLength = fileName.length
-    if ((fileName[--fileLength] != 'c' && fileName[fileLength] != 'C') || fileName[--fileLength] != '.') {
+    if (!fileName.endsWith(".c") && !fileName.endsWith(".C")) {
         println("this is not c file")
         return
     }
