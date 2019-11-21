@@ -19,6 +19,10 @@ fun main(args: Array<String>) {
     val allTokenList = mutableListOf<MutableList<String>>()
 
     if (file != null && out != null) allTokenList.addAll(splitSpace(file, out))
+    else {
+        println("file not found")
+        return
+    }
 
     allTokenList.forEach {
         functionList.add(FunctionToken(it))
@@ -26,13 +30,7 @@ fun main(args: Array<String>) {
 
     nameChane()
 
-    functionList.forEach {
-        it.tokenList.forEach { t ->
-            fprintf(out, "%s", t.token)
-            if (t.type == TokenType.TYPE || t.type == TokenType.CONTROL) fprintf(out, " ")
-        }
-        fprintf(out, "\n")
-    }
+    writeFile(out)
 
     fclose(file)
     fclose(out)
