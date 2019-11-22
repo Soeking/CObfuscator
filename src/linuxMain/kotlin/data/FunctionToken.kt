@@ -6,7 +6,7 @@ import util.*
 class FunctionToken(tokens: MutableList<String>) {
     val tokenList = mutableListOf<Token>()
     var isFunction = false
-    val name:String
+    val name: String
     val varName = mutableMapOf<String, String>()
 
     init {
@@ -41,5 +41,10 @@ class FunctionToken(tokens: MutableList<String>) {
             if (it.type == TokenType.VARIABLE && varName.containsKey(it.token))
                 it.token = varName[it.token] ?: it.token
         }
+    }
+
+    fun recursive() {
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("argc"))
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("int"))
     }
 }

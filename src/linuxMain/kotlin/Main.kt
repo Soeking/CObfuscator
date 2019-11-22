@@ -30,6 +30,8 @@ fun main(args: Array<String>) {
         functionList.add(FunctionToken(it))
     }
 
+    if (allTokenList.count { it.count { t -> t == "main" } == 1 } == 1)
+        recursiveMain()
     nameChane()
 
     writeFile(out)
