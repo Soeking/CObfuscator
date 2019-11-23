@@ -31,7 +31,11 @@ class FunctionToken(tokens: MutableList<String>) {
 
     fun changeVar() {
         tokenList.forEach {
-            if (it.type == TokenType.VARIABLE && tokenList[tokenList.indexOf(it) - 1].type == TokenType.TYPE) {
+            if (it.type == TokenType.VARIABLE &&
+                (tokenList[tokenList.indexOf(it) - 1].type == TokenType.TYPE ||
+                        (tokenList.indexOfFirst { t -> t.token == "main" } < tokenList.indexOf(it) &&
+                                tokenList.indexOf(it) < tokenList.indexOfFirst { t -> t.token == "{" }))
+            ) {
                 var randName = createName()
                 while (varName.containsValue(randName)) randName = createName()
                 varName[it.token] = randName
@@ -44,7 +48,18 @@ class FunctionToken(tokens: MutableList<String>) {
     }
 
     fun recursive() {
-        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("argc"))
-        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("int"))
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("arg3"))
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token(","))
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("arg2"))
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token(","))
+        tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("arg1"))
+        val ifText = listOf("if", "(", "!", "arg${arrayOf(1, 2, 3).random()}", ")", "return", "0", ";")
+        ifText.reversed().forEach {
+            tokenList.add(tokenList.indexOfFirst { t -> t.token == "{" } + 1, Token(it))
+        }
+        val mainText = listOf("main", "(", "0", ",", "0", ",", "0", ")", ";")
+        mainText.forEach {
+            tokenList.add(tokenList.indexOfLast { t -> t.token == "}" }, Token(it))
+        }
     }
 }
