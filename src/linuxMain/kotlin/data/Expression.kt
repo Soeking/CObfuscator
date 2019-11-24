@@ -19,14 +19,12 @@ class Expression(l: Expression?, r: Expression?, o: String?, var value: Int) {
             "&" -> l and r
             "|" -> l or r
             "^" -> l xor r
-            "<<" -> l shl r
-            ">>" -> l shr r
             else -> null
         }
     }
 
-    fun setText(l: Expression?, r: Expression?, o: String?): String? {
+    private fun setText(l: Expression?, r: Expression?, o: String?): String? {
         if (l == null || r == null) return null
-        return "(${l.text}$o${r.text})"
+        return "( ${l.text} $o ${r.text} )"
     }
 }
