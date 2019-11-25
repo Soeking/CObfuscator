@@ -30,6 +30,9 @@ fun main(args: Array<String>) {
         functionList.add(FunctionToken(it))
     }
 
+    functionList.forEach {
+        if (it.isFunction) it.addBlock()
+    }
     if (allTokenList.count { it.count { t -> t == "main" } == 1 } == 1)
         recursiveMain()
     nameChane()

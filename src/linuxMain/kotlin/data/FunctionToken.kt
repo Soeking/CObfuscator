@@ -2,6 +2,7 @@ package data
 
 import obf.*
 import util.*
+import kotlin.random.Random
 
 class FunctionToken(tokens: MutableList<String>) {
     val tokenList = mutableListOf<Token>()
@@ -64,5 +65,31 @@ class FunctionToken(tokens: MutableList<String>) {
         createMainText().forEach {
             tokenList.add(tokenList.indexOfLast { t -> t.token == "}" }, Token(it))
         }
+    }
+
+    fun addBlock() {
+        findIndex(true)?.let {
+            createBlock(name == "main").reversed().forEach { s ->
+                tokenList.add(it, Token(s))
+            }
+        }
+        findIndex(false)?.let {
+            createBlock(name == "main").reversed().forEach { s ->
+                tokenList.add(it, Token(s))
+            }
+        }
+    }
+
+    private fun findIndex(b: Boolean): Int? {
+        val rand = Random
+        if (b)
+            tokenList.forEach {
+                if (it.token == ";" && rand.nextInt().rem(3) == 0) return tokenList.indexOf(it) + 1
+            }
+        else
+            tokenList.reversed().forEach {
+                if (it.token == ";" && rand.nextInt().rem(3) == 0) return tokenList.indexOf(it) + 1
+            }
+        return null
     }
 }

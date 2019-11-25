@@ -3,23 +3,24 @@ package util
 import obf.*
 import kotlin.random.Random
 
-fun createBlock(): List<String> {
+fun createBlock(b: Boolean): List<String> {
     val list = mutableListOf<String>()
     val varList = mutableListOf<String>()
     val rand = Random
     val size = rand.nextInt(3) + 2
     varList.add(createName())
-    list + createLine(varList.first(), 0)
+    list.addAll(createLine(varList.first(), 0))
     while (varList.size <= size) {
         when (rand.nextInt(3)) {
             0 -> {
                 varList.add(createName())
-                list + createLine(varList.first(), 0)
+                list.addAll(createLine(varList.last(), 0))
             }
-            in 1..2 -> list + createLine(varList.random(), (1..9).random())
+            in 1..2 -> if (b) list.addAll(createLine(varList.random(), (1..9).random()))
+            else list.addAll(createLine(varList.random(), 1))
         }
     }
-    return listOf("{") + list + "}"
+    return list
 }
 
 fun createLine(v: String, x: Int): List<String> {
