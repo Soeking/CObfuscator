@@ -53,7 +53,8 @@ class FunctionToken(tokens: MutableList<String>) {
         tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("arg2"))
         tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token(","))
         tokenList.add(tokenList.indexOfFirst { it.type == TokenType.BRACKET } + 1, Token("arg1"))
-        val ifText = listOf("if", "(", "!", "arg${arrayOf(1, 2, 3).random()}", ")", "return", "0", ";")
+        val ifText = listOf("if", "(", "!", "arg${arrayOf(1, 2, 3).random()}", ")", "return") +
+                createListOfExp(0) + ";"
         ifText.reversed().forEach {
             tokenList.add(tokenList.indexOfFirst { t -> t.token == "{" } + 1, Token(it))
         }
@@ -63,18 +64,5 @@ class FunctionToken(tokens: MutableList<String>) {
         createMainText().forEach {
             tokenList.add(tokenList.indexOfLast { t -> t.token == "}" }, Token(it))
         }
-    }
-
-    private fun createMainText(): List<String> {
-        val ifSen = when ((0..3).map { it }.random()) {
-            0 -> listOf("if", "(") + createListOfExp(0) + ")"
-            1 -> listOf("if", "(") + createListOfExp(0) + "?" +
-                    createListOfExp(1) + ":" + createListOfExp(0) + ")"
-            2 -> listOf("if", "(") + "arg${arrayOf(1, 2, 3).random()}" + ">" + createListOfExp(0) + ")"
-            else -> listOf()
-        }
-        return ifSen + listOf("main", "(") + createListOfExp(0) +
-                "," + createListOfExp(0) +
-                "," + createListOfExp(0) + listOf(")", ";")
     }
 }
