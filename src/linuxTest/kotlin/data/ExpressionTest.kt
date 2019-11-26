@@ -19,10 +19,22 @@ class ExpressionTest {
     @Test
     fun testCreate() {
         var list = createListOfExp(0)
-        println(list)
+        println(list.size)
         list = createListOfExp(1)
-        println(list)
-        list = createListOfExp(1)
-        println(list)
+        println(list.size)
+        list = createListOfExp(2)
+        println(list.size)
+        list = createListOfExp(3)
+        println(list.size)
+        list = createListOfExp(4)
+        println(list.size)
+        list = createListOfExp(5)
+        println(list.size)
+        list = createListOfExp(6)
+        println(list.size)
+        list = createListOfExp(7)
+        println(list.size)
+        list = createListOfExp(8)
+        println(list.size)
     }
 }

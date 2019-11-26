@@ -84,12 +84,22 @@ class FunctionToken(tokens: MutableList<String>) {
         val rand = Random
         if (b)
             tokenList.forEach {
-                if (it.token == ";" && rand.nextInt().rem(3) == 0 && tokenList[tokenList.indexOf(it) + 1].token != "else")
+                if (it.token == ";" && rand.nextInt().rem(3) == 0 &&
+                    tokenList[tokenList.indexOf(it) + 1].token != "else" &&
+                    tokenList[tokenList.indexOfFirst { t ->
+                        t.type == TokenType.BRACKET && tokenList.indexOf(t) > tokenList.indexOf(it)
+                    }].token != ")"
+                )
                     return tokenList.indexOf(it) + 1
             }
         else
             tokenList.reversed().forEach {
-                if (it.token == ";" && rand.nextInt().rem(3) == 0 && tokenList[tokenList.indexOf(it) + 1].token != "else")
+                if (it.token == ";" && rand.nextInt().rem(3) == 0 &&
+                    tokenList[tokenList.indexOf(it) + 1].token != "else" &&
+                    tokenList[tokenList.indexOfFirst { t ->
+                        t.type == TokenType.BRACKET && tokenList.indexOf(t) > tokenList.indexOf(it)
+                    }].token != ")"
+                )
                     return tokenList.indexOf(it) + 1
             }
         return null
