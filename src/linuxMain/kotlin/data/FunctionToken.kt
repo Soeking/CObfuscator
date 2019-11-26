@@ -12,7 +12,7 @@ class FunctionToken(tokens: MutableList<String>) {
 
     init {
         tokens.forEach {
-            tokenList.add(Token(it))
+            if (it.isNotEmpty()) tokenList.add(Token(it))
         }
 
         if (tokens.first() == "typedef") typeList.add(tokens[tokens.size - 2])
@@ -84,11 +84,13 @@ class FunctionToken(tokens: MutableList<String>) {
         val rand = Random
         if (b)
             tokenList.forEach {
-                if (it.token == ";" && rand.nextInt().rem(3) == 0) return tokenList.indexOf(it) + 1
+                if (it.token == ";" && rand.nextInt().rem(3) == 0 && tokenList[tokenList.indexOf(it) + 1].token != "else")
+                    return tokenList.indexOf(it) + 1
             }
         else
             tokenList.reversed().forEach {
-                if (it.token == ";" && rand.nextInt().rem(3) == 0) return tokenList.indexOf(it) + 1
+                if (it.token == ";" && rand.nextInt().rem(3) == 0 && tokenList[tokenList.indexOf(it) + 1].token != "else")
+                    return tokenList.indexOf(it) + 1
             }
         return null
     }

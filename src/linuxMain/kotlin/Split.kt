@@ -53,6 +53,7 @@ fun splitToken(word: String): MutableList<String> {
     val tokens = mutableListOf<String>()
     var token = ""
     var string = false
+    var opt = false
     word.forEach {
         if (it == '"') {
             if (string) {
@@ -64,12 +65,30 @@ fun splitToken(word: String): MutableList<String> {
                 token = "$it"
                 string = true
             }
+            opt = false
         } else if (nameChars.contains(it) || it == '.' || it == '\\' || string) {
+            if (opt) {
+                opt = false
+                tokens.add(token)
+                token = ""
+            }
             token += it
+        } else if (optionList.contains(it)) {
+            if (opt) {
+                opt = false
+                token += it
+                tokens.add(token)
+                token = ""
+            } else {
+                opt = true
+                tokens.add(token)
+                token = it.toString()
+            }
         } else {
             if (token.isNotEmpty()) tokens.add(token)
             tokens.add(it.toString())
             token = ""
+            opt = false
         }
     }
     if (token.isNotEmpty()) tokens.add(token)

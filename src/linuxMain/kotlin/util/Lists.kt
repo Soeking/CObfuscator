@@ -8,6 +8,7 @@ val nameChars = alphabets + numbers + '_'
 val typeList = mutableListOf("int", "double", "long", "float", "void", "char")
 val controlList = listOf("for", "if", "while", "else", "do", "return", "goto", "typedef", "struct")
 val bracketList = listOf('{', '}', '(', ')', '[', ']', ';', ',')
+val optionList = listOf('+', '-', '*', '/', '%', '=', '&', '|', '^', '<', '>')
 
 val functionList = mutableListOf<FunctionToken>()
 val functionNames = mutableMapOf<String, String>()
