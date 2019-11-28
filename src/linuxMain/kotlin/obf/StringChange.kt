@@ -9,7 +9,8 @@ fun stringCheck() {
         val list = mutableListOf<Int>()
         it.tokenList.filter { t -> t.type == TokenType.STRING }.forEach { t ->
             if (it.tokenList[it.tokenList.indexOf(t) - 2].token == "printf" &&
-                it.tokenList[it.tokenList.indexOf(t) - 3].token == ";"
+                (it.tokenList[it.tokenList.indexOf(t) - 3].token == ";" ||
+                        it.tokenList[it.tokenList.indexOf(t) - 3].token == "}")
             )
                 list.add(it.tokenList.indexOf(t))
         }
@@ -30,6 +31,19 @@ fun changeString(id: Int, list: List<Int>) {
             functionList[id].tokenList[it] = Token(text)
             createCharArray(v, toArray).reversed().forEach { s ->
                 functionList[id].tokenList.add(charArrayId, Token(s))
+            }
+        } else {
+            val length = text.indexOfFirst { c -> c == '%' }
+            if (length > 1) {
+                val toArray = text.take(length).drop(1)
+                val v = createName()
+                text = '\"' + "%s" + text.drop(length)
+                functionList[id].tokenList.add(it + 1, Token(v))
+                functionList[id].tokenList.add(it + 1, Token(","))
+                functionList[id].tokenList[it] = Token(text)
+                createCharArray(v, toArray).reversed().forEach { s ->
+                    functionList[id].tokenList.add(charArrayId, Token(s))
+                }
             }
         }
     }
@@ -57,6 +71,6 @@ fun createCharArray(v: String, target: String): List<String> {
         list.add(",")
         i++
     }
-    list.dropLast(1)
+    list.add("0")
     return list + "}" + ";"
 }

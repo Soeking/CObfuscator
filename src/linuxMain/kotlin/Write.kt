@@ -11,7 +11,7 @@ fun writeFile(out: CPointer<FILE>) {
         it.tokenList.forEach { t ->
             fprintf(out, "%s", t.token)
             if (t.type == TokenType.TYPE || t.type == TokenType.CONTROL) fprintf(out, " ")
-            if (rand.nextInt().rem(10) == 0) fprintf(out, "\n")
+            if (rand.nextInt().rem(20) == 0) fprintf(out, "\n")
         }
     }
 }
