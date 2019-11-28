@@ -6,8 +6,7 @@ class MainTest {
     @Test
     fun testSplit() {
         val testFile = fopen("test.c", "r") ?: return
-        val testOut = fopen("out.c", "w") ?: return
-        val list = splitSpace(testFile, testOut)
+        val list = splitSpace(testFile)
         list.forEach {
             println(it)
         }

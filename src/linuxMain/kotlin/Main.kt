@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     val out = fopen(outName, "w")
     val allTokenList = mutableListOf<MutableList<String>>()
 
-    if (file != null && out != null) allTokenList.addAll(splitSpace(file, out))
+    if (file != null && out != null) allTokenList.addAll(splitSpace(file))
     else {
         println("file not found")
         return

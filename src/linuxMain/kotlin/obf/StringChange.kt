@@ -10,7 +10,8 @@ fun stringCheck() {
         it.tokenList.filter { t -> t.type == TokenType.STRING }.forEach { t ->
             if (it.tokenList[it.tokenList.indexOf(t) - 2].token == "printf" &&
                 (it.tokenList[it.tokenList.indexOf(t) - 3].token == ";" ||
-                        it.tokenList[it.tokenList.indexOf(t) - 3].token == "}")
+                        it.tokenList[it.tokenList.indexOf(t) - 3].token == "}" ||
+                        it.tokenList[it.tokenList.indexOf(t) - 3].token == "{")
             )
                 list.add(it.tokenList.indexOf(t))
         }

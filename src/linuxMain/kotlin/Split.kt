@@ -6,7 +6,7 @@ import platform.posix.fgets
 import platform.posix.fprintf
 import util.*
 
-fun splitSpace(file: CPointer<FILE>, out: CPointer<FILE>): MutableList<MutableList<String>> {
+fun splitSpace(file: CPointer<FILE>): MutableList<MutableList<String>> {
     val bufferLength = 64 * 1024
     val buffer = ByteArray(1000)
     val functionList = mutableListOf<MutableList<String>>()
@@ -17,8 +17,10 @@ fun splitSpace(file: CPointer<FILE>, out: CPointer<FILE>): MutableList<MutableLi
         var line = fgets(buffer.refTo(1), bufferLength, file)?.toKString() ?: break
         line = line.replace("\n", "")
         if (line.isEmpty()) continue
-        if (line.first() == '#') fprintf(out, "%s\n", line)
-        else {
+        if (line.first() == '#') {
+            if (line.startsWith("#include")) includeSet.add(line.drop(9).dropLast(3))
+            else defList.add(line)
+        } else {
             if (blockCount == 0) functionList.add(mutableListOf())
             blockCount += line.count { it == '{' } - line.count { it == '}' }
             val words = line.split(" ").map { it }
