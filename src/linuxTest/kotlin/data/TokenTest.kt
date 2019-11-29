@@ -9,7 +9,7 @@ class TokenTest {
         assertEquals(Token("abc").type, TokenType.VARIABLE)
         assertEquals(Token("2.9").type, TokenType.NUMBER)
         assertEquals(Token("while").type, TokenType.CONTROL)
-        assertEquals(Token(";").type, TokenType.BRACKET)
+        assertEquals(Token("}").type, TokenType.BRACKET)
         assertEquals(Token("\"%f\n\"").type, TokenType.STRING)
     }
 }
