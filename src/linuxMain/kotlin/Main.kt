@@ -1,29 +1,43 @@
 import data.FunctionToken
+import kotlinx.cinterop.CPointer
 import obf.*
 import platform.posix.*
 import util.*
 
 fun main(args: Array<String>) {
+    val fileList = mutableListOf<CPointer<FILE>>()
+    val outFileList = mutableListOf<CPointer<FILE>>()
+
     if (args.isEmpty()) {
         println("no file")
         return
     }
-    val fileName = args[0]
-    if (!fileName.endsWith(".c") && !fileName.endsWith(".C")) {
-        println("this is not c file")
+
+    if (fileCheck(args)) {
+        args.forEach {
+            fopen(it, "r")?.let { f ->
+                fileList.add(f)
+            }
+            fopen(
+                when (it.last()) {
+                    in listOf('c', 'C') -> it.dropLast(2) + "_obf.c"
+                    in listOf('h', 'H') -> it.dropLast(2) + "_obf.h"
+                    else -> return
+                },
+                "w"
+            )?.let { f ->
+                outFileList.add(f)
+            }
+        }
+    } else {
+        println("not c file")
         return
     }
-    var outName = fileName.dropLast(2)
-    outName += "_obf.c"
 
-    val file = fopen(fileName, "r")
-    val out = fopen(outName, "w")
     val allTokenList = mutableListOf<MutableList<String>>()
 
-    if (file != null && out != null) allTokenList.addAll(splitSpace(file))
-    else {
-        println("file not found")
-        return
+    fileList.forEach {
+        allTokenList.addAll(splitSpace(it))
     }
 
     allTokenList.forEach {
@@ -38,8 +52,19 @@ fun main(args: Array<String>) {
     }
     stringCheck()
 
-    writeFile(out)
+    outFileList.forEach {
+        writeFile(it)
+    }
 
-    fclose(file)
-    fclose(out)
+    (fileList + outFileList).forEach {
+        fclose(it)
+    }
+}
+
+fun fileCheck(list: Array<String>): Boolean {
+    list.forEach {
+        if (!it.endsWith(".c") && !it.endsWith(".C") && !it.endsWith(".h") && !it.endsWith(".H"))
+            return false
+    }
+    return true
 }
