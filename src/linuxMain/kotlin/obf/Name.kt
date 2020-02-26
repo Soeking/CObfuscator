@@ -5,7 +5,7 @@ import platform.posix.abs
 import util.*
 import kotlin.random.Random
 
-fun nameChane() {
+fun nameChange() {
     functionList.forEach {
         if (it.isFunction) it.changeVar()
     }

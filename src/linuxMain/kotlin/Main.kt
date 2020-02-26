@@ -1,3 +1,4 @@
+import data.File
 import data.FunctionToken
 import kotlinx.cinterop.CPointer
 import obf.*
@@ -5,8 +6,7 @@ import platform.posix.*
 import util.*
 
 fun main(args: Array<String>) {
-    val fileList = mutableListOf<CPointer<FILE>>()
-    val outFileList = mutableListOf<CPointer<FILE>>()
+    val fileList = mutableListOf<File>()
 
     if (args.isEmpty()) {
         println("no file")
@@ -15,19 +15,7 @@ fun main(args: Array<String>) {
 
     if (fileCheck(args)) {
         args.forEach {
-            fopen(it, "r")?.let { f ->
-                fileList.add(f)
-            }
-            fopen(
-                when (it.last()) {
-                    in listOf('c', 'C') -> it.dropLast(2) + "_obf.c"
-                    in listOf('h', 'H') -> it.dropLast(2) + "_obf.h"
-                    else -> return
-                },
-                "w"
-            )?.let { f ->
-                outFileList.add(f)
-            }
+            fileList.add(File(it))
         }
     } else {
         println("not c file")
@@ -37,16 +25,12 @@ fun main(args: Array<String>) {
     val allTokenList = mutableListOf<MutableList<String>>()
 
     fileList.forEach {
-        allTokenList.addAll(splitSpace(it))
-    }
-
-    allTokenList.forEach {
-        functionList.add(FunctionToken(it))
+        it.setFunction(splitSpace(it))
     }
 
     if (allTokenList.count { it.count { t -> t == "main" } == 1 } == 1)
         recursiveMain()
-    nameChane()
+    nameChange()
     functionList.forEach {
         if (it.isFunction) it.addBlock()
     }

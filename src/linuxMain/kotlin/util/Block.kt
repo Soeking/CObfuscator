@@ -33,6 +33,7 @@ fun createLine(v: String, x: Int): List<String> {
 }
 
 fun initLine(v: String): List<String> {
+    val typeList = listOf("int", "double", "long", "float", "void", "char")
     var type = typeList.random()
     while (type == "void") type = typeList.random()
     return listOf(type, v, "=") + createListOfExp(arrayOf(0, 1, 2).random()) + ";"

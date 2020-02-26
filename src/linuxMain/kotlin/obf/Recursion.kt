@@ -1,7 +1,6 @@
 package obf
 
 import data.TokenType
-import util.functionList
 
 fun recursiveMain() {
     val functionToken = functionList.find { it.name == "main" } ?: return

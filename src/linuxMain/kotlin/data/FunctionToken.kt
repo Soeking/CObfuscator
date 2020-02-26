@@ -4,7 +4,7 @@ import obf.*
 import util.*
 import kotlin.random.Random
 
-class FunctionToken(tokens: MutableList<String>) {
+class FunctionToken(tokens: List<String>,file: File) {
     val tokenList = mutableListOf<Token>()
     var isFunction = false
     val name: String
@@ -15,7 +15,7 @@ class FunctionToken(tokens: MutableList<String>) {
             if (it.isNotEmpty()) tokenList.add(Token(it))
         }
 
-        if (tokens.first() == "typedef") typeList.add(tokens[tokens.size - 2])
+        if (tokens.first() == "typedef") file.typeList.add(tokens[tokens.size - 2])
         if (tokens.count { it == "{" } >= 1 && (tokens.indexOf("{") < tokens.indexOf("struct")
                     || (!tokens.contains("struct") && tokens.contains("{"))))
             isFunction = true

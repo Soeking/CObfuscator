@@ -9,12 +9,15 @@ import kotlin.random.Random
 
 fun writeFile(out: CPointer<FILE>) {
     val rand = Random
+
     includeSet.shuffled().forEach {
         fprintf(out, "#include<%s.h>\n", it)
     }
+
     defList.forEach {
         fprintf(out, "%s\n", it)
     }
+
     functionList.forEach {
         it.tokenList.forEach { t ->
             fprintf(out, "%s", t.token)

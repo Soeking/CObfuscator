@@ -1,12 +1,12 @@
+import data.File
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.toKString
 import platform.posix.FILE
 import platform.posix.fgets
-import platform.posix.fprintf
 import util.*
 
-fun splitSpace(file: CPointer<FILE>): MutableList<MutableList<String>> {
+fun splitSpace(file: File): MutableList<MutableList<String>> {
     val bufferLength = 64 * 1024
     val buffer = ByteArray(1000)
     val functionList = mutableListOf<MutableList<String>>()
@@ -14,12 +14,15 @@ fun splitSpace(file: CPointer<FILE>): MutableList<MutableList<String>> {
     var isNotBlockComment = true
 
     while (true) {
-        var line = fgets(buffer.refTo(1), bufferLength, file)?.toKString() ?: break
+        var line = fgets(buffer.refTo(1), bufferLength, file.inFile)?.toKString() ?: break
         line = line.replace("\n", "")
         if (line.isEmpty()) continue
         if (line.first() == '#') {
-            if (line.startsWith("#include")) includeSet.add(line.drop(9).dropLast(3))
-            else defList.add(line)
+            if (line.startsWith("#include")) {
+                if (line.last()=='>') file.includeSet.add(line.dropWhile { it != '<' && it != '\"' }.drop(1).dropLast(3))
+                else if (line.last()=='\"') file.includeSet.add(line.dropWhile { it != '<' && it != '\"' }.drop(1).dropLast(3))
+            }
+            else file.defList.add(line)
         } else {
             if (blockCount == 0) functionList.add(mutableListOf())
             blockCount += line.count { it == '{' } - line.count { it == '}' }
